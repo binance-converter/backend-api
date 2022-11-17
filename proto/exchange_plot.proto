@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package binance_converter.backend_api.exchange_plot;
+
+option go_package = "/api/exchange_plot";
+
+import "google/protobuf/timestamp.proto";
+
+message timeInterval {
+  google.protobuf.Timestamp start = 1;
+  google.protobuf.Timestamp end = 2;
+}
+
+message plot {
+    bytes image = 1;
+}
+
+service exchangePlot {
+  rpc GetExchangePlot(timeInterval) returns (plot);
+}

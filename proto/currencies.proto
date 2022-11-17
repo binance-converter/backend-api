@@ -1,0 +1,40 @@
+syntax = "proto3";
+package binance_converter.backend_api.currencies;
+
+option go_package = "/api/currencies";
+
+import "google/protobuf/empty.proto";
+
+message currencyCode {
+  string currencyCode = 1;
+}
+
+message currencyCodes {
+  repeated currencyCode currencyCodes = 1;
+}
+
+message bankName {
+  string bankName = 1;
+}
+
+message bankNames {
+  repeated bankName bankNames = 1;
+}
+
+message fullCurrency {
+  currencyCode currencyCode = 1;
+  bankName bankName = 2;
+}
+
+message fullCurrencies {
+  repeated fullCurrency fullCurrencies = 1;
+}
+
+
+
+service currencies {
+  rpc GetAvailableCurrencies(google.protobuf.Empty) returns (currencyCodes);
+  rpc GetAvailableBankByCurrency(currencyCode) returns (bankNames);
+  rpc SetCurrency(fullCurrency) returns (google.protobuf.Empty);
+  rpc GetMyCurrencies(google.protobuf.Empty) returns (fullCurrencies);
+}
