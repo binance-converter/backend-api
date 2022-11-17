@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package binance_converter.backend_api.converter;
+
+option go_package = "/api/converter";
+
+import "google/protobuf/empty.proto";
+
+message converterPair {
+  repeated string converterPair = 1;
+}
+
+message converterPairs {
+  repeated converterPair converterPairs = 1;
+}
+
+message exchange {
+  float exchange = 1;
+}
+
+message thresholdConvertPair {
+  converterPair converterPair = 1;
+  exchange exchange = 2;
+}
+
+message thresholdConvertPairs {
+  repeated converterPair converterPairs = 1;
+}
+
+service converter {
+  rpc GetAvailableConverterPairs(google.protobuf.Empty) returns (converterPairs);
+  rpc SetConvertPair(converterPair) returns (google.protobuf.Empty);
+  rpc GetMyConvertPairs(google.protobuf.Empty) returns (converterPairs);
+  rpc SetThresholdConvertPairs(thresholdConvertPair) returns (google.protobuf.Empty);
+  rpc GetMyThresholdConvertPairs(google.protobuf.Empty) returns (thresholdConvertPairs);
+  rpc GetCurrentExchange(converterPair) returns (exchange);
+}

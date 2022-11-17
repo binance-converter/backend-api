@@ -1,0 +1,20 @@
+syntax = "proto3";
+package binance_converter.backend_api.auth;
+
+option go_package = "/api/auth";
+
+message SignUpUserByTelegramRequest {
+  int64 chatId = 1;
+  string userName = 2;
+  string firstName = 3;
+  string lastName = 4;
+  string languageCode = 5;
+}
+
+message SignUpUserByTelegramResponse {
+  string errorMessage = 1;
+}
+
+service auth {
+  rpc SignUpUserByTelegram(SignUpUserByTelegramRequest) returns (SignUpUserByTelegramResponse);
+}
