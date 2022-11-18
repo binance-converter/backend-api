@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -22,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthClient interface {
-	SignUpUserByTelegram(ctx context.Context, in *SignUpUserByTelegramRequest, opts ...grpc.CallOption) (*SignUpUserByTelegramResponse, error)
+	SignUpUserByTelegram(ctx context.Context, in *SignUpUserByTelegramRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type authClient struct {
@@ -33,8 +34,8 @@ func NewAuthClient(cc grpc.ClientConnInterface) AuthClient {
 	return &authClient{cc}
 }
 
-func (c *authClient) SignUpUserByTelegram(ctx context.Context, in *SignUpUserByTelegramRequest, opts ...grpc.CallOption) (*SignUpUserByTelegramResponse, error) {
-	out := new(SignUpUserByTelegramResponse)
+func (c *authClient) SignUpUserByTelegram(ctx context.Context, in *SignUpUserByTelegramRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/binance_converter.backend_api.auth.auth/SignUpUserByTelegram", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -46,7 +47,7 @@ func (c *authClient) SignUpUserByTelegram(ctx context.Context, in *SignUpUserByT
 // All implementations must embed UnimplementedAuthServer
 // for forward compatibility
 type AuthServer interface {
-	SignUpUserByTelegram(context.Context, *SignUpUserByTelegramRequest) (*SignUpUserByTelegramResponse, error)
+	SignUpUserByTelegram(context.Context, *SignUpUserByTelegramRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedAuthServer()
 }
 
@@ -54,7 +55,7 @@ type AuthServer interface {
 type UnimplementedAuthServer struct {
 }
 
-func (UnimplementedAuthServer) SignUpUserByTelegram(context.Context, *SignUpUserByTelegramRequest) (*SignUpUserByTelegramResponse, error) {
+func (UnimplementedAuthServer) SignUpUserByTelegram(context.Context, *SignUpUserByTelegramRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SignUpUserByTelegram not implemented")
 }
 func (UnimplementedAuthServer) mustEmbedUnimplementedAuthServer() {}
