@@ -3,6 +3,8 @@ package binance_converter.backend_api.auth;
 
 option go_package = "/api/auth";
 
+import "google/protobuf/empty.proto";
+
 message SignUpUserByTelegramRequest {
   int64 chatId = 1;
   string userName = 2;
@@ -11,10 +13,6 @@ message SignUpUserByTelegramRequest {
   string languageCode = 5;
 }
 
-message SignUpUserByTelegramResponse {
-  string errorMessage = 1;
-}
-
 service auth {
-  rpc SignUpUserByTelegram(SignUpUserByTelegramRequest) returns (SignUpUserByTelegramResponse);
+  rpc SignUpUserByTelegram(SignUpUserByTelegramRequest) returns (google.protobuf.Empty);
 }
