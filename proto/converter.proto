@@ -5,9 +5,11 @@ package binance_converter.backend_api.converter;
 option go_package = "/api/converter";
 
 import "google/protobuf/empty.proto";
+import "proto/currencies.proto";
+
 
 message converterPair {
-  repeated string converterPair = 1;
+  repeated currencies.fullCurrency converterPair = 1;
 }
 
 message converterPairs {
@@ -19,12 +21,12 @@ message exchange {
 }
 
 message thresholdConvertPair {
-  converterPair converterPair = 1;
+  currencies.fullCurrency converterPair = 1;
   exchange exchange = 2;
 }
 
 message thresholdConvertPairs {
-  repeated converterPair converterPairs = 1;
+  repeated thresholdConvertPair converterPairs = 1;
 }
 
 service converter {
