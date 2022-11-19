@@ -5,12 +5,17 @@ option go_package = "/api/currencies";
 
 import "google/protobuf/empty.proto";
 
-message currencyCode {
-  string currencyCode = 1;
+enum eCurrencyType {
+  CRYPTO = 0;
+  CLASSIC = 1;
 }
 
-message currencyCodes {
-  repeated currencyCode currencyCodes = 1;
+message currencyType {
+    eCurrencyType type = 1;
+}
+
+message CurrencyTypes {
+    repeated currencyType types = 1;
 }
 
 message bankName {
@@ -21,9 +26,19 @@ message bankNames {
   repeated bankName bankNames = 1;
 }
 
+
+message currencyCode {
+  string currencyCode = 2;
+}
+
+message currencyCodes {
+  repeated currencyCode currencyCodes = 2;
+}
+
 message fullCurrency {
-  currencyCode currencyCode = 1;
-  bankName bankName = 2;
+  currencyType type = 1;
+  string currencyCode = 2;
+  bankName bankName = 3;
 }
 
 message fullCurrencies {
@@ -32,11 +47,13 @@ message fullCurrencies {
 
 
 
+
 service currencies {
-  rpc GetAvailableCurrencies(google.protobuf.Empty) returns (currencyCodes);
+  rpc GetAvailableCurrencies(currencyType) returns (currencyCodes);
   rpc GetAvailableBankByCurrency(currencyCode) returns (bankNames);
   rpc SetCurrency(fullCurrency) returns (google.protobuf.Empty);
-  rpc GetMyCurrencies(google.protobuf.Empty) returns (fullCurrencies);
+  rpc GetMyCurrencies(currencyType) returns (fullCurrencies);
+  rpc DeleteCurrency(fullCurrency) returns (google.protobuf.Empty);
 }
 
 enum AdditionalErrorCode {
