@@ -19,3 +19,8 @@ service coin {
   rpc SetCoin(coinCode) returns (google.protobuf.Empty);
   rpc GetMyCoins(google.protobuf.Empty) returns (coinCodes);
 }
+
+enum AdditionalErrorCode {
+    OK = 0;
+    INVALID_COIN_CODE = 100;
+}
