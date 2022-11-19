@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ExchangePlotClient interface {
-	GetExchangePlot(ctx context.Context, in *TimeInterval, opts ...grpc.CallOption) (*Plot, error)
+	GetExchangePlot(ctx context.Context, in *PlotParams, opts ...grpc.CallOption) (*Plot, error)
 }
 
 type exchangePlotClient struct {
@@ -33,7 +33,7 @@ func NewExchangePlotClient(cc grpc.ClientConnInterface) ExchangePlotClient {
 	return &exchangePlotClient{cc}
 }
 
-func (c *exchangePlotClient) GetExchangePlot(ctx context.Context, in *TimeInterval, opts ...grpc.CallOption) (*Plot, error) {
+func (c *exchangePlotClient) GetExchangePlot(ctx context.Context, in *PlotParams, opts ...grpc.CallOption) (*Plot, error) {
 	out := new(Plot)
 	err := c.cc.Invoke(ctx, "/binance_converter.backend_api.exchange_plot.exchangePlot/GetExchangePlot", in, out, opts...)
 	if err != nil {
@@ -46,7 +46,7 @@ func (c *exchangePlotClient) GetExchangePlot(ctx context.Context, in *TimeInterv
 // All implementations must embed UnimplementedExchangePlotServer
 // for forward compatibility
 type ExchangePlotServer interface {
-	GetExchangePlot(context.Context, *TimeInterval) (*Plot, error)
+	GetExchangePlot(context.Context, *PlotParams) (*Plot, error)
 	mustEmbedUnimplementedExchangePlotServer()
 }
 
@@ -54,7 +54,7 @@ type ExchangePlotServer interface {
 type UnimplementedExchangePlotServer struct {
 }
 
-func (UnimplementedExchangePlotServer) GetExchangePlot(context.Context, *TimeInterval) (*Plot, error) {
+func (UnimplementedExchangePlotServer) GetExchangePlot(context.Context, *PlotParams) (*Plot, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetExchangePlot not implemented")
 }
 func (UnimplementedExchangePlotServer) mustEmbedUnimplementedExchangePlotServer() {}
@@ -71,7 +71,7 @@ func RegisterExchangePlotServer(s grpc.ServiceRegistrar, srv ExchangePlotServer)
 }
 
 func _ExchangePlot_GetExchangePlot_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TimeInterval)
+	in := new(PlotParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -83,7 +83,7 @@ func _ExchangePlot_GetExchangePlot_Handler(srv interface{}, ctx context.Context,
 		FullMethod: "/binance_converter.backend_api.exchange_plot.exchangePlot/GetExchangePlot",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ExchangePlotServer).GetExchangePlot(ctx, req.(*TimeInterval))
+		return srv.(ExchangePlotServer).GetExchangePlot(ctx, req.(*PlotParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }

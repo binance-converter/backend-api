@@ -23,10 +23,11 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CurrenciesClient interface {
-	GetAvailableCurrencies(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CurrencyCodes, error)
+	GetAvailableCurrencies(ctx context.Context, in *CurrencyType, opts ...grpc.CallOption) (*CurrencyCodes, error)
 	GetAvailableBankByCurrency(ctx context.Context, in *CurrencyCode, opts ...grpc.CallOption) (*BankNames, error)
 	SetCurrency(ctx context.Context, in *FullCurrency, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	GetMyCurrencies(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*FullCurrencies, error)
+	GetMyCurrencies(ctx context.Context, in *CurrencyType, opts ...grpc.CallOption) (*FullCurrencies, error)
+	DeleteCurrency(ctx context.Context, in *FullCurrency, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type currenciesClient struct {
@@ -37,7 +38,7 @@ func NewCurrenciesClient(cc grpc.ClientConnInterface) CurrenciesClient {
 	return &currenciesClient{cc}
 }
 
-func (c *currenciesClient) GetAvailableCurrencies(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CurrencyCodes, error) {
+func (c *currenciesClient) GetAvailableCurrencies(ctx context.Context, in *CurrencyType, opts ...grpc.CallOption) (*CurrencyCodes, error) {
 	out := new(CurrencyCodes)
 	err := c.cc.Invoke(ctx, "/binance_converter.backend_api.currencies.currencies/GetAvailableCurrencies", in, out, opts...)
 	if err != nil {
@@ -64,9 +65,18 @@ func (c *currenciesClient) SetCurrency(ctx context.Context, in *FullCurrency, op
 	return out, nil
 }
 
-func (c *currenciesClient) GetMyCurrencies(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*FullCurrencies, error) {
+func (c *currenciesClient) GetMyCurrencies(ctx context.Context, in *CurrencyType, opts ...grpc.CallOption) (*FullCurrencies, error) {
 	out := new(FullCurrencies)
 	err := c.cc.Invoke(ctx, "/binance_converter.backend_api.currencies.currencies/GetMyCurrencies", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *currenciesClient) DeleteCurrency(ctx context.Context, in *FullCurrency, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/binance_converter.backend_api.currencies.currencies/DeleteCurrency", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -77,10 +87,11 @@ func (c *currenciesClient) GetMyCurrencies(ctx context.Context, in *emptypb.Empt
 // All implementations must embed UnimplementedCurrenciesServer
 // for forward compatibility
 type CurrenciesServer interface {
-	GetAvailableCurrencies(context.Context, *emptypb.Empty) (*CurrencyCodes, error)
+	GetAvailableCurrencies(context.Context, *CurrencyType) (*CurrencyCodes, error)
 	GetAvailableBankByCurrency(context.Context, *CurrencyCode) (*BankNames, error)
 	SetCurrency(context.Context, *FullCurrency) (*emptypb.Empty, error)
-	GetMyCurrencies(context.Context, *emptypb.Empty) (*FullCurrencies, error)
+	GetMyCurrencies(context.Context, *CurrencyType) (*FullCurrencies, error)
+	DeleteCurrency(context.Context, *FullCurrency) (*emptypb.Empty, error)
 	mustEmbedUnimplementedCurrenciesServer()
 }
 
@@ -88,7 +99,7 @@ type CurrenciesServer interface {
 type UnimplementedCurrenciesServer struct {
 }
 
-func (UnimplementedCurrenciesServer) GetAvailableCurrencies(context.Context, *emptypb.Empty) (*CurrencyCodes, error) {
+func (UnimplementedCurrenciesServer) GetAvailableCurrencies(context.Context, *CurrencyType) (*CurrencyCodes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAvailableCurrencies not implemented")
 }
 func (UnimplementedCurrenciesServer) GetAvailableBankByCurrency(context.Context, *CurrencyCode) (*BankNames, error) {
@@ -97,8 +108,11 @@ func (UnimplementedCurrenciesServer) GetAvailableBankByCurrency(context.Context,
 func (UnimplementedCurrenciesServer) SetCurrency(context.Context, *FullCurrency) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetCurrency not implemented")
 }
-func (UnimplementedCurrenciesServer) GetMyCurrencies(context.Context, *emptypb.Empty) (*FullCurrencies, error) {
+func (UnimplementedCurrenciesServer) GetMyCurrencies(context.Context, *CurrencyType) (*FullCurrencies, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMyCurrencies not implemented")
+}
+func (UnimplementedCurrenciesServer) DeleteCurrency(context.Context, *FullCurrency) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteCurrency not implemented")
 }
 func (UnimplementedCurrenciesServer) mustEmbedUnimplementedCurrenciesServer() {}
 
@@ -114,7 +128,7 @@ func RegisterCurrenciesServer(s grpc.ServiceRegistrar, srv CurrenciesServer) {
 }
 
 func _Currencies_GetAvailableCurrencies_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
+	in := new(CurrencyType)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -126,7 +140,7 @@ func _Currencies_GetAvailableCurrencies_Handler(srv interface{}, ctx context.Con
 		FullMethod: "/binance_converter.backend_api.currencies.currencies/GetAvailableCurrencies",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CurrenciesServer).GetAvailableCurrencies(ctx, req.(*emptypb.Empty))
+		return srv.(CurrenciesServer).GetAvailableCurrencies(ctx, req.(*CurrencyType))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -168,7 +182,7 @@ func _Currencies_SetCurrency_Handler(srv interface{}, ctx context.Context, dec f
 }
 
 func _Currencies_GetMyCurrencies_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
+	in := new(CurrencyType)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -180,7 +194,25 @@ func _Currencies_GetMyCurrencies_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: "/binance_converter.backend_api.currencies.currencies/GetMyCurrencies",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CurrenciesServer).GetMyCurrencies(ctx, req.(*emptypb.Empty))
+		return srv.(CurrenciesServer).GetMyCurrencies(ctx, req.(*CurrencyType))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Currencies_DeleteCurrency_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FullCurrency)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CurrenciesServer).DeleteCurrency(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/binance_converter.backend_api.currencies.currencies/DeleteCurrency",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CurrenciesServer).DeleteCurrency(ctx, req.(*FullCurrency))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -207,6 +239,10 @@ var Currencies_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetMyCurrencies",
 			Handler:    _Currencies_GetMyCurrencies_Handler,
+		},
+		{
+			MethodName: "DeleteCurrency",
+			Handler:    _Currencies_DeleteCurrency_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
