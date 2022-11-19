@@ -38,3 +38,9 @@ service currencies {
   rpc SetCurrency(fullCurrency) returns (google.protobuf.Empty);
   rpc GetMyCurrencies(google.protobuf.Empty) returns (fullCurrencies);
 }
+
+enum AdditionalErrorCode {
+  OK = 0;
+  INVALID_CURRENCY_CODE = 100;
+  INVALID_BANK_CODE = 101;
+}
