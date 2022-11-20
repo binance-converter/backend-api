@@ -37,7 +37,7 @@ message currencyCodes {
 
 message fullCurrency {
   currencyType type = 1;
-  string currencyCode = 2;
+  currencyCode currencyCode = 2;
   bankName bankName = 3;
 }
 
