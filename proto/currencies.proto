@@ -58,6 +58,7 @@ service currencies {
 
 enum AdditionalErrorCode {
   OK = 0;
-  INVALID_CURRENCY_CODE = 100;
-  INVALID_BANK_CODE = 101;
+  INVALID_CURRENCY_TYPE = 100;
+  INVALID_CURRENCY_CODE = 101;
+  INVALID_BANK_CODE = 102;
 }
