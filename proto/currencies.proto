@@ -53,7 +53,7 @@ service currencies {
   rpc GetAvailableBankByCurrency(currencyCode) returns (bankNames);
   rpc SetCurrency(fullCurrency) returns (google.protobuf.Empty);
   rpc GetMyCurrencies(currencyType) returns (fullCurrencies);
-  rpc DeleteCurrency(fullCurrency) returns (google.protobuf.Empty);
+  rpc DeleteCurrency(currencyCode) returns (google.protobuf.Empty);
 }
 
 enum AdditionalErrorCode {

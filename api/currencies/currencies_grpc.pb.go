@@ -27,7 +27,7 @@ type CurrenciesClient interface {
 	GetAvailableBankByCurrency(ctx context.Context, in *CurrencyCode, opts ...grpc.CallOption) (*BankNames, error)
 	SetCurrency(ctx context.Context, in *FullCurrency, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetMyCurrencies(ctx context.Context, in *CurrencyType, opts ...grpc.CallOption) (*FullCurrencies, error)
-	DeleteCurrency(ctx context.Context, in *FullCurrency, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteCurrency(ctx context.Context, in *CurrencyCode, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type currenciesClient struct {
@@ -74,7 +74,7 @@ func (c *currenciesClient) GetMyCurrencies(ctx context.Context, in *CurrencyType
 	return out, nil
 }
 
-func (c *currenciesClient) DeleteCurrency(ctx context.Context, in *FullCurrency, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *currenciesClient) DeleteCurrency(ctx context.Context, in *CurrencyCode, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/binance_converter.backend_api.currencies.currencies/DeleteCurrency", in, out, opts...)
 	if err != nil {
@@ -91,7 +91,7 @@ type CurrenciesServer interface {
 	GetAvailableBankByCurrency(context.Context, *CurrencyCode) (*BankNames, error)
 	SetCurrency(context.Context, *FullCurrency) (*emptypb.Empty, error)
 	GetMyCurrencies(context.Context, *CurrencyType) (*FullCurrencies, error)
-	DeleteCurrency(context.Context, *FullCurrency) (*emptypb.Empty, error)
+	DeleteCurrency(context.Context, *CurrencyCode) (*emptypb.Empty, error)
 	mustEmbedUnimplementedCurrenciesServer()
 }
 
@@ -111,7 +111,7 @@ func (UnimplementedCurrenciesServer) SetCurrency(context.Context, *FullCurrency)
 func (UnimplementedCurrenciesServer) GetMyCurrencies(context.Context, *CurrencyType) (*FullCurrencies, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMyCurrencies not implemented")
 }
-func (UnimplementedCurrenciesServer) DeleteCurrency(context.Context, *FullCurrency) (*emptypb.Empty, error) {
+func (UnimplementedCurrenciesServer) DeleteCurrency(context.Context, *CurrencyCode) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteCurrency not implemented")
 }
 func (UnimplementedCurrenciesServer) mustEmbedUnimplementedCurrenciesServer() {}
@@ -200,7 +200,7 @@ func _Currencies_GetMyCurrencies_Handler(srv interface{}, ctx context.Context, d
 }
 
 func _Currencies_DeleteCurrency_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(FullCurrency)
+	in := new(CurrencyCode)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -212,7 +212,7 @@ func _Currencies_DeleteCurrency_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: "/binance_converter.backend_api.currencies.currencies/DeleteCurrency",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CurrenciesServer).DeleteCurrency(ctx, req.(*FullCurrency))
+		return srv.(CurrenciesServer).DeleteCurrency(ctx, req.(*CurrencyCode))
 	}
 	return interceptor(ctx, in, info, handler)
 }
