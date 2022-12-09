@@ -1,7 +1,7 @@
 syntax = "proto3";
 package binance_converter.backend_api.currencies;
 
-option go_package = "/api/currencies";
+option go_package = "github.com/binance-converter/backend-api/api/currencies";
 
 import "google/protobuf/empty.proto";
 
