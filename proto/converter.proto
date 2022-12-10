@@ -21,7 +21,7 @@ message exchange {
 }
 
 message thresholdConvertPair {
-  currencies.fullCurrency converterPair = 1;
+  converterPair converterPair = 1;
   exchange exchange = 2;
 }
 
